@@ -6,7 +6,7 @@
 
   <groupId>com.brickworker</groupId>
   <artifactId>spring-boot-starter-process</artifactId>
-  <version>1.0.0-RELEASE</version>
+  <version>1.0.1-RELEASE</version>
   <packaging>jar</packaging>
 
   <name>spring-boot-starter-process</name>

@@ -1,7 +1,6 @@
 package com.brickworker.advice;
 
-import com.alibaba.fastjson.JSONObject;
-import com.brickworker.annotation.Process;
+import com.brickworker.annotation.Tracer;
 import com.brickworker.support.ContextHolder;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -14,45 +13,37 @@ import java.lang.reflect.Method;
 
 /**
  * @ Author     ：brickworkers.
- * @ Date       ：Created in 19:17 2019-06-08
- * @ Description：@Process处理,日志打印，耗时打印
+ * @ Date       ：Created in 21:35 2019-06-08
+ * @ Description：方法追踪
  */
-
-
 @Aspect
-public class ProcessAdvice {
+public class TracerAdvice {
 
-    @Around("@annotation(com.brickworker.annotation.Process)")
+
+
+    @Around("@annotation(com.brickworker.annotation.Tracer)")
     public Object invoke(ProceedingJoinPoint point){
         Object obj = null;
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
-        Process process = method.getAnnotation(Process.class);
+        Tracer process = method.getAnnotation(Tracer.class);
         //日志打印
         Logger logger = LoggerFactory.getLogger(point.getTarget().getClass());
         //类.方法
         String name = method.getDeclaringClass().getSimpleName() + "." + method.getName();
         //计算耗时
         long start = System.currentTimeMillis();
-        //日志输入打印
-        logger.info(">>>> - {}|{}", name, JSONObject.toJSONString(point.getArgs()));
-        //执行
         try {
             obj = point.proceed();
         }catch (Throwable e){
-            logger.warn(">><<< - {}", name, e);
+            logger.warn("method invoke error", e);
         }finally {
-            if(null != obj){
-                long costTime = System.currentTimeMillis() - start;
-                logger.info("<<<< - {}|{}|{}", name, costTime, JSONObject.toJSONString(obj));
-                // 如果有要求打印详细堆栈
-                if(process.threshold() != -1 && costTime > process.threshold()){
-                    logger.error("[RT warnning]method invoke rt > {},real cost:{} \n\r {}", process.threshold(), ContextHolder.get());
-                }
-            }
+            // 插入方法执行时间
+            long cost = System.currentTimeMillis() - start;
+            ContextHolder.set(String.format("\n\r %s invoke cost %s", name, cost) );
         }
         return obj;
     }
 
-}
 
+}

@@ -1,6 +1,7 @@
 package com.brickworker.config;
 
 import com.brickworker.advice.ProcessAdvice;
+import com.brickworker.advice.TracerAdvice;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
@@ -21,5 +22,11 @@ public class ProcessAutoConfiguration {
     @Bean
     public ProcessAdvice processAdvice(){
         return new ProcessAdvice();
+    }
+
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Bean
+    public TracerAdvice tracerAdvice(){
+        return new TracerAdvice();
     }
 }

@@ -11,6 +11,13 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Tracer
 public @interface Process {
+
+    /**
+     * 阈值，设定方法最大可接受的阈值，-1表示不打印
+     * @return
+     */
+    int threshold() default -1;
 
 }
