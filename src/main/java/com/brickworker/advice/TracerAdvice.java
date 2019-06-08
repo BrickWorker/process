@@ -26,7 +26,6 @@ public class TracerAdvice {
         Object obj = null;
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
         Method method = methodSignature.getMethod();
-        Tracer process = method.getAnnotation(Tracer.class);
         //日志打印
         Logger logger = LoggerFactory.getLogger(point.getTarget().getClass());
         //类.方法
